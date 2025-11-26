@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: d1e543b56e553ed4bb9abbd638fd257f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - prefabPeluru: {fileID: 4700001862611300895, guid: 3e68444cf72c510489e4ed374838e6b7, type: 3}
+  - titikTembak: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
