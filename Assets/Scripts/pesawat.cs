@@ -3,17 +3,22 @@ using UnityEngine.InputSystem;
 
 public class GerakPesawat : MonoBehaviour
 {
-    // --- SETTINGAN ---
+    // --- SETTINGAN GERAK ---
     public float kecepatan = 5f;
     public float batasAtas = 6.85f;
     public float batasBawah = -5.25f;
     public float kekuatanRotasi = 5f;
 
-    public Transform modelPesawat; 
+    public Transform modelPesawat;
 
     // --- PELURU ---
     public GameObject prefabPeluru;
     public Transform titikTembak;
+
+    // --- NYAWA & EFEK KENA HIT (BARU) ---
+    [Header("Settingan Nyawa")]
+    public int nyawa = 3;             // Jumlah nyawa awal
+    public float faktorMengecil = 0.9f; // Ukuran jadi 70% setiap kena hit
 
     private float rotasiModelAsliX;
     private float rotasiModelAsliY;
@@ -31,6 +36,9 @@ public class GerakPesawat : MonoBehaviour
 
     void Update()
     {
+        // Kalau game over (waktu berhenti), hentikan input
+        if (Time.timeScale == 0) return;
+
         // 1. INPUT
         float inputY = 0f;
         if (Keyboard.current != null)
@@ -41,15 +49,17 @@ public class GerakPesawat : MonoBehaviour
 
         // 2. GERAK POSISI 
         float yBaru = transform.position.y + (inputY * kecepatan * Time.deltaTime);
+
+        // Batasi posisi (Clamping)
         if (yBaru > batasAtas) yBaru = batasAtas;
         else if (yBaru < batasBawah) yBaru = batasBawah;
 
         transform.position = new Vector3(transform.position.x, yBaru, transform.position.z);
 
+        // Reset rotasi global biar gak aneh
         transform.rotation = Quaternion.identity;
 
-
-        // 3. GERAK ROTASI 
+        // 3. GERAK ROTASI MODEL
         if (modelPesawat != null)
         {
             float rotasiZBaru = rotasiModelAsliZ + (inputY * kekuatanRotasi);
@@ -70,5 +80,42 @@ public class GerakPesawat : MonoBehaviour
         {
             Instantiate(prefabPeluru, titikTembak.position, prefabPeluru.transform.rotation);
         }
+    }
+
+    // --- FUNGSI TABRAKAN (BARU) ---
+    // Pastikan Player punya Rigidbody (uncheck Use Gravity) dan Box Collider (Check IsTrigger)
+    private void OnTriggerEnter(Collider other)
+    {
+        // Cek apakah yang ditabrak adalah Musuh?
+        // Pastikan Prefab Balok/Bola/Musuh punya Tag "Enemy"
+        if (other.CompareTag("Enemy"))
+        {
+            KenaHit();
+            Destroy(other.gameObject); // Hancurkan musuh yang nabrak
+        }
+    }
+
+    void KenaHit()
+    {
+        nyawa--; // Kurangi nyawa
+        Debug.Log("Pesawat Kena! Sisa Nyawa: " + nyawa);
+
+        // Efek Mengecil
+        transform.localScale = transform.localScale * faktorMengecil;
+
+        // Cek Game Over
+        if (nyawa <= 0)
+        {
+            GameOver();
+        }
+    }
+
+    void GameOver()
+    {
+        Debug.Log("GAME OVER!");
+        // Menghentikan waktu permainan
+        Time.timeScale = 0;
+
+        // Di sini nanti bisa panggil UI Game Over
     }
 }

@@ -247,6 +247,8 @@ GameObject:
   m_Component:
   - component: {fileID: 332117546}
   - component: {fileID: 332117547}
+  - component: {fileID: 332117549}
+  - component: {fileID: 332117548}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -262,15 +264,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 332117545}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.110614, y: 1.0547146, z: -5.1301136}
+  m_LocalRotation: {x: 0, y: -0.03925978, z: 0, w: 0.9992291}
+  m_LocalPosition: {x: -14.05, y: 0.34, z: -5.1301136}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3014664441536881675}
   - {fileID: 225979960}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -4.5, z: 0}
 --- !u!114 &332117547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,6 +292,56 @@ MonoBehaviour:
   modelPesawat: {fileID: 3014664441536881675}
   prefabPeluru: {fileID: 4700001862611300895, guid: 3e68444cf72c510489e4ed374838e6b7, type: 3}
   titikTembak: {fileID: 225979960}
+  nyawa: 3
+  faktorMengecil: 0.9
+--- !u!65 &332117548
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332117545}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.853961, y: 3.2766776, z: 1}
+  m_Center: {x: -0.13392389, y: -0.009943724, z: -0.0000013704683}
+--- !u!54 &332117549
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332117545}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1460,13 +1512,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2494411429994495665}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7660445, y: 0, z: 0, w: 0.64278764}
-  m_LocalPosition: {x: -2.6853857, y: 0.095285416, z: 0.000113487244}
-  m_LocalScale: {x: -3.4039998, y: -3.1823235, z: 3.9285998}
+  m_LocalRotation: {x: 0, y: 0.64278764, z: 0.7660445, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3.404, y: 3.182323, z: 3.9285998}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 332117546}
-  m_LocalEulerAnglesHint: {x: -100, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -100, y: 180, z: 0}
 --- !u!23 &4151493720183758692
 MeshRenderer:
   m_ObjectHideFlags: 0

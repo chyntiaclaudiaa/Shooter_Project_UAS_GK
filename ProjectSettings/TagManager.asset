@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Projectile
   - Peluru
+  - Enemy
   layers:
   - Default
   - TransparentFX
