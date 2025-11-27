@@ -5,25 +5,20 @@ public class GerakEnemy : MonoBehaviour
     public float kecepatanGerak = 5f;
     public float batasKiri = -15f;
 
-    // --- ROTASI ---
+    // ROTASI
     public float kecepatanRotasiX = 0f;
     public float kecepatanRotasiY = 0f;
     public float kecepatanRotasiZ = 100f;
+    private float sudutX = 0; private float sudutY = 0; private float sudutZ = 0;
 
-    private float sudutX = 0;
-    private float sudutY = 0;
-    private float sudutZ = 0;
-
-    // --- EFEK LEDAKAN (BARU) ---
-    public GameObject prefabLedakan; 
+    [Header("Efek")]
+    public GameObject prefabLedakan;
+    public AudioClip suaraPecah;
 
     void Start()
     {
         Vector3 rotasiAwal = transform.eulerAngles;
-        sudutX = rotasiAwal.x;
-        sudutY = rotasiAwal.y;
-        sudutZ = rotasiAwal.z;
-
+        sudutX = rotasiAwal.x; sudutY = rotasiAwal.y; sudutZ = rotasiAwal.z;
         sudutZ = Random.Range(0, 360);
     }
 
@@ -40,23 +35,29 @@ public class GerakEnemy : MonoBehaviour
         if (sudutZ >= 360f) sudutZ -= 360f;
         transform.eulerAngles = new Vector3(sudutX, sudutY, sudutZ);
 
-        if (transform.position.x < batasKiri)
-        {
-            Destroy(gameObject);
-        }
+        if (transform.position.x < batasKiri) Destroy(gameObject);
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Peluru"))
         {
-            // 1. MUNCULKAN EFEK LEDAKAN
-            if (prefabLedakan != null)
+            // --- BAGIAN SKOR (INI BARU) ---
+            // Cari script ScoreManager di dalam scene, lalu tambah 10
+            ScoreManager penambahSkor = FindFirstObjectByType<ScoreManager>();
+            if (penambahSkor != null)
             {
-                Instantiate(prefabLedakan, transform.position, Quaternion.identity);
+                penambahSkor.TambahSkor(10);
             }
+            // ------------------------------
 
-            // 2. HANCURKAN PELURU & MUSUH
+            // EFEK VISUAL
+            if (prefabLedakan != null) Instantiate(prefabLedakan, transform.position, Quaternion.identity);
+
+            // EFEK SUARA
+            if (suaraPecah != null) AudioSource.PlayClipAtPoint(suaraPecah, transform.position);
+
+            // HANCURKAN
             Destroy(other.gameObject);
             Destroy(gameObject);
         }

@@ -128,6 +128,7 @@ MonoBehaviour:
   kecepatanRotasiY: 0
   kecepatanRotasiZ: 100
   prefabLedakan: {fileID: 7819485850935076067, guid: b6df8bf5473edb14d93c2e085ad6b43f, type: 3}
+  suaraPecah: {fileID: 8300000, guid: b34ac9204e7d6b84696328f5cf27d23b, type: 3}
 --- !u!54 &-6027734974391641955
 Rigidbody:
   m_ObjectHideFlags: 0
