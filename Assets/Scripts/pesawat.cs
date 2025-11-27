@@ -7,7 +7,7 @@ public class GerakPesawat : MonoBehaviour
     public float kecepatan = 5f;
     public float batasAtas = 6.85f;
     public float batasBawah = -5.25f;
-    public float kekuatanRotasi = 5f;
+    public float kekuatanRotasi = 3f;
 
     public Transform modelPesawat;
 
@@ -15,11 +15,16 @@ public class GerakPesawat : MonoBehaviour
     public GameObject prefabPeluru;
     public Transform titikTembak;
 
-    // --- NYAWA & EFEK KENA HIT (BARU) ---
+    // --- NYAWA & EFEK ---
     [Header("Settingan Nyawa")]
-    public int nyawa = 3;             // Jumlah nyawa awal
-    public float faktorMengecil = 0.9f; // Ukuran jadi 70% setiap kena hit
+    public int nyawa = 3;
+    public float faktorMengecil = 0.9f;
 
+    // --- UI GAME OVER (INI YANG BARU) ---
+    [Header("UI Game Over")]
+    public GameObject panelGameOver; // <--- Variabel baru buat panel
+
+    // Variabel Simpanan Rotasi
     private float rotasiModelAsliX;
     private float rotasiModelAsliY;
     private float rotasiModelAsliZ;
@@ -36,10 +41,9 @@ public class GerakPesawat : MonoBehaviour
 
     void Update()
     {
-        // Kalau game over (waktu berhenti), hentikan input
         if (Time.timeScale == 0) return;
 
-        // 1. INPUT
+        // 1. INPUT GERAK
         float inputY = 0f;
         if (Keyboard.current != null)
         {
@@ -47,26 +51,23 @@ public class GerakPesawat : MonoBehaviour
             else if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) inputY = -1f;
         }
 
-        // 2. GERAK POSISI 
+        // 2. LOGIKA POSISI
         float yBaru = transform.position.y + (inputY * kecepatan * Time.deltaTime);
 
-        // Batasi posisi (Clamping)
         if (yBaru > batasAtas) yBaru = batasAtas;
         else if (yBaru < batasBawah) yBaru = batasBawah;
 
         transform.position = new Vector3(transform.position.x, yBaru, transform.position.z);
-
-        // Reset rotasi global biar gak aneh
         transform.rotation = Quaternion.identity;
 
-        // 3. GERAK ROTASI MODEL
+        // 3. LOGIKA ROTASI MODEL
         if (modelPesawat != null)
         {
             float rotasiZBaru = rotasiModelAsliZ + (inputY * kekuatanRotasi);
             modelPesawat.localEulerAngles = new Vector3(rotasiModelAsliX, rotasiModelAsliY, rotasiZBaru);
         }
 
-        // 4. NEMBAK
+        // 4. LOGIKA NEMBAK
         bool tekanTembak = false;
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame) tekanTembak = true;
         if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame) tekanTembak = true;
@@ -82,28 +83,24 @@ public class GerakPesawat : MonoBehaviour
         }
     }
 
-    // --- FUNGSI TABRAKAN (BARU) ---
-    // Pastikan Player punya Rigidbody (uncheck Use Gravity) dan Box Collider (Check IsTrigger)
+    // --- FUNGSI TABRAKAN ---
     private void OnTriggerEnter(Collider other)
     {
-        // Cek apakah yang ditabrak adalah Musuh?
-        // Pastikan Prefab Balok/Bola/Musuh punya Tag "Enemy"
         if (other.CompareTag("Enemy"))
         {
             KenaHit();
-            Destroy(other.gameObject); // Hancurkan musuh yang nabrak
+            Destroy(other.gameObject);
         }
     }
 
     void KenaHit()
     {
-        nyawa--; // Kurangi nyawa
+        nyawa--;
         Debug.Log("Pesawat Kena! Sisa Nyawa: " + nyawa);
 
         // Efek Mengecil
         transform.localScale = transform.localScale * faktorMengecil;
 
-        // Cek Game Over
         if (nyawa <= 0)
         {
             GameOver();
@@ -113,9 +110,12 @@ public class GerakPesawat : MonoBehaviour
     void GameOver()
     {
         Debug.Log("GAME OVER!");
-        // Menghentikan waktu permainan
+
         Time.timeScale = 0;
 
-        // Di sini nanti bisa panggil UI Game Over
+        if (panelGameOver != null)
+        {
+            panelGameOver.SetActive(true);
+        }
     }
 }
