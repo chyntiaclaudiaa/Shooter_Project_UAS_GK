@@ -93,7 +93,7 @@ public class GerakPesawat : MonoBehaviour
         }
     }
 
-    void KenaHit()
+    public void KenaHit()
     {
         nyawa--;
         Debug.Log("Pesawat Kena! Sisa Nyawa: " + nyawa);
