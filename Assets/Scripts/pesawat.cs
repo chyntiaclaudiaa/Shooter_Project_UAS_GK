@@ -21,7 +21,6 @@ public class GerakPesawat : MonoBehaviour
 
     void Start()
     {
-        // Kita simpan rotasi asli si MODEL, bukan si Player
         if (modelPesawat != null)
         {
             rotasiModelAsliX = modelPesawat.localEulerAngles.x;

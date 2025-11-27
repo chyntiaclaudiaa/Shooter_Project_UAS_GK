@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2904090859171160323}
   serializedVersion: 2
   m_LocalRotation: {x: 0.37518024, y: -0.12324416, z: 0.28672057, w: 0.87283564}
-  m_LocalPosition: {x: 1.58, y: 1.26, z: -4.95}
+  m_LocalPosition: {x: 1.58, y: 1.26, z: -5.130114}
   m_LocalScale: {x: 2.5614696, y: 1.44, z: 0.92}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -127,6 +127,7 @@ MonoBehaviour:
   kecepatanRotasiX: 0
   kecepatanRotasiY: 0
   kecepatanRotasiZ: 100
+  prefabLedakan: {fileID: 7819485850935076067, guid: b6df8bf5473edb14d93c2e085ad6b43f, type: 3}
 --- !u!54 &-1582708848167808029
 Rigidbody:
   m_ObjectHideFlags: 0

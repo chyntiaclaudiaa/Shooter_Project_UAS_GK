@@ -9,7 +9,8 @@ public class GerakPeluru : MonoBehaviour
     {
         // Gerak ke kanan (Sumbu X)
         float xBaru = transform.position.x + (kecepatan * Time.deltaTime);
-        transform.position = new Vector3(xBaru, transform.position.y, transform.position.z);
+
+        transform.position = new Vector3(xBaru, transform.position.y, -5.130114f);
 
         // Hancur kalau lewat batas
         if (transform.position.x > batasKanan) Destroy(gameObject);

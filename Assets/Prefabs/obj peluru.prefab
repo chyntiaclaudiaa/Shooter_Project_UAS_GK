@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 900661470049364877}
   - component: {fileID: 1466083231221634973}
   - component: {fileID: -4862715381511286835}
+  - component: {fileID: 668773133058452930}
   m_Layer: 0
   m_Name: obj peluru
   m_TagString: Peluru
@@ -137,7 +138,7 @@ Transform:
   m_GameObject: {fileID: 4700001862611300895}
   serializedVersion: 2
   m_LocalRotation: {x: 0.68080926, y: 0.19104639, z: -0.19104639, w: 0.68080926}
-  m_LocalPosition: {x: -6.26, y: -0.3, z: -2.03}
+  m_LocalPosition: {x: -6.26, y: -0.3, z: -5.130114}
   m_LocalScale: {x: 3, y: 0.1, z: 1.78}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -186,6 +187,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kecepatan: 15
   batasKanan: 20
+--- !u!65 &668773133058452930
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4700001862611300895}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4701831944492612158
 GameObject:
   m_ObjectHideFlags: 0

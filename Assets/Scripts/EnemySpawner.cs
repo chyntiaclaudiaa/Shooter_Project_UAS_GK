@@ -26,12 +26,10 @@ public class EnemySpawner : MonoBehaviour
     {
         if (daftarMusuh.Length == 0) return;
 
-        // 1. Pilih musuh acak (Bola? Kubus?)
         int index = Random.Range(0, daftarMusuh.Length);
-
-        // 2. Pilih tinggi acak (Atas? Bawah?)
         float yAcak = Random.Range(tinggiMin, tinggiMax);
-        Vector3 posisiSpawn = new Vector3(posisiX, yAcak, 0);
+
+        Vector3 posisiSpawn = new Vector3(posisiX, yAcak, -5.130114f);
 
         Instantiate(daftarMusuh[index], posisiSpawn, Quaternion.identity);
     }
