@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class GerakEnemy : MonoBehaviour
 {
@@ -9,61 +10,91 @@ public class GerakEnemy : MonoBehaviour
     public float kecepatanRotasiX = 0f;
     public float kecepatanRotasiY = 0f;
     public float kecepatanRotasiZ = 100f;
-    private float sudutX = 0; private float sudutY = 0; private float sudutZ = 0;
+    private float sudutX, sudutY, sudutZ;
 
     [Header("Efek")]
     public GameObject prefabLedakan;
     public AudioClip suaraPecah;
 
+    [Header("Warna Kena Tembak")]
+    public Renderer rendererEnemy;
+    public Color warnaKena = new Color(0.9f, 0.9f, 0.9f, 1f);
+    public float durasiWarna = 0.15f;
+
+    private Material matEnemy;
+    private bool sudahKena = false;
+
     void Start()
     {
+        // ROTASI AWAL
         Vector3 rotasiAwal = transform.eulerAngles;
-        sudutX = rotasiAwal.x; sudutY = rotasiAwal.y; sudutZ = rotasiAwal.z;
+        sudutX = rotasiAwal.x;
+        sudutY = rotasiAwal.y;
         sudutZ = Random.Range(0, 360);
+
+        // AMBIL MATERIAL (TIDAK MENGUBAH WARNA AWAL)
+        if (rendererEnemy == null)
+            rendererEnemy = GetComponentInChildren<Renderer>();
+
+        if (rendererEnemy != null)
+            matEnemy = rendererEnemy.material; // INSTANCE material
     }
 
     void Update()
     {
-        // Gerak
-        float xBaru = transform.position.x - (kecepatanGerak * Time.deltaTime);
-        transform.position = new Vector3(xBaru, transform.position.y, transform.position.z);
+        // GERAK
+        transform.position += Vector3.left * kecepatanGerak * Time.deltaTime;
 
-        // Rotasi
+        // ROTASI
         sudutX += kecepatanRotasiX * Time.deltaTime;
         sudutY += kecepatanRotasiY * Time.deltaTime;
         sudutZ += kecepatanRotasiZ * Time.deltaTime;
         if (sudutZ >= 360f) sudutZ -= 360f;
+
         transform.eulerAngles = new Vector3(sudutX, sudutY, sudutZ);
 
-        if (transform.position.x < batasKiri) Destroy(gameObject);
+        // KELUAR LAYAR
+        if (transform.position.x < batasKiri)
+            Destroy(gameObject);
     }
 
     void OnTriggerEnter(Collider other)
     {
+        if (sudahKena) return;
+
         if (other.CompareTag("Peluru"))
         {
-            // --- BAGIAN SKOR (INI BARU) ---
-            // Cari script ScoreManager di dalam scene, lalu tambah 10
-            ScoreManager penambahSkor = FindFirstObjectByType<ScoreManager>();
-            if (penambahSkor != null)
-            {
-                penambahSkor.TambahSkor(10);
-            }
-            // ------------------------------
+            sudahKena = true;
 
-            // EFEK VISUAL
-            if (prefabLedakan != null) Instantiate(prefabLedakan, transform.position, Quaternion.identity);
-
-            // EFEK SUARA
-            if (suaraPecah != null) AudioSource.PlayClipAtPoint(suaraPecah, transform.position);
-
-            // HANCURKAN
             Destroy(other.gameObject);
-            Destroy(gameObject);
+
+            // TAMBAH SKOR
+            ScoreManager score = FindFirstObjectByType<ScoreManager>();
+            if (score != null)
+                score.TambahSkor(10);
+
+            StartCoroutine(AbuHancur());
         }
         else if (other.CompareTag("Player"))
         {
             Destroy(gameObject);
         }
+    }
+
+    IEnumerator AbuHancur()
+    {
+        // UBAH WARNA KE ABU (TANPA BALIK)
+        if (matEnemy != null)
+            matEnemy.color = warnaKena;
+
+        yield return new WaitForSeconds(durasiWarna);
+
+        if (prefabLedakan != null)
+            Instantiate(prefabLedakan, transform.position, Quaternion.identity);
+
+        if (suaraPecah != null)
+            AudioSource.PlayClipAtPoint(suaraPecah, transform.position);
+
+        Destroy(gameObject);
     }
 }
