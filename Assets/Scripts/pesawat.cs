@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
+
 
 public class GerakPesawat : MonoBehaviour
 {
@@ -30,10 +32,25 @@ public class GerakPesawat : MonoBehaviour
     private float rotasiModelAsliY;
     private float rotasiModelAsliZ;
 
+    [Header("Shader Warna")]
+    public Renderer rendererPesawat;
+    public Color warnaNormal = new Color(0.29f, 0.29f, 0.29f, 1f);
+    public Color warnaTembak = new Color(0.75f, 0.75f, 0.75f, 1f);
+    public float durasiWarnaTembak = 0.4f;
+
+    private Material matPesawat;
+
+
     void Start()
     {
         // Cari komponen AudioSource di benda ini
         audioSource = GetComponent<AudioSource>();
+        rendererPesawat = GetComponentInChildren<Renderer>();
+        if (rendererPesawat != null)
+        {
+            matPesawat = rendererPesawat.material; // INSTANCE material
+            matPesawat.SetColor("_Color", warnaNormal);
+        }
 
         if (modelPesawat != null)
         {
@@ -86,6 +103,11 @@ public class GerakPesawat : MonoBehaviour
             {
                 audioSource.PlayOneShot(suaraTembak);
             }
+            if (matPesawat != null)
+            {
+                StopAllCoroutines();
+                StartCoroutine(FlashWarna());
+            }
         }
     }
 
@@ -121,4 +143,12 @@ public class GerakPesawat : MonoBehaviour
         Time.timeScale = 0;
         if (panelGameOver != null) panelGameOver.SetActive(true);
     }
+
+    IEnumerator FlashWarna()
+    {
+        matPesawat.SetColor("_Color", warnaTembak);
+        yield return new WaitForSeconds(durasiWarnaTembak);
+        matPesawat.SetColor("_Color", warnaNormal);
+    }
+
 }
