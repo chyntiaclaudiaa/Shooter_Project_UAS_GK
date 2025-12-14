@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
-
 public class GerakPesawat : MonoBehaviour
 {
     [Header("Settingan Gerak")]
@@ -20,24 +19,38 @@ public class GerakPesawat : MonoBehaviour
     public int nyawa = 3;
     public float faktorMengecil = 0.9f;
 
-    [Header("UI Game Over")]
+    [Header("UI")]
     public GameObject panelGameOver;
+    public GameObject panelWin; // <-- BARU: Panel untuk menang
 
     [Header("Audio")]
-    public AudioClip suaraTembak;   
-    public AudioClip suaraGameOver;  
-    private AudioSource audioSource; 
+    public AudioClip suaraTembak;
+    public AudioClip suaraGameOver;
+    private AudioSource audioSource;
 
     private float rotasiModelAsliX;
     private float rotasiModelAsliY;
     private float rotasiModelAsliZ;
 
+    [Header("Shader Warna")]
+    public Renderer rendererPesawat;
+    public Color warnaNormal = new Color(0.29f, 0.29f, 0.29f, 1f);
+    public Color warnaTembak = new Color(0.75f, 0.75f, 0.75f, 1f);
+    public float durasiWarnaTembak = 0.4f;
+
+    private Material matPesawat;
 
 
     void Start()
     {
         // Cari komponen AudioSource di benda ini
         audioSource = GetComponent<AudioSource>();
+        rendererPesawat = GetComponentInChildren<Renderer>();
+        if (rendererPesawat != null)
+        {
+            matPesawat = rendererPesawat.material; // INSTANCE material
+            matPesawat.SetColor("_Color", warnaNormal);
+        }
 
         if (modelPesawat != null)
         {
@@ -45,6 +58,10 @@ public class GerakPesawat : MonoBehaviour
             rotasiModelAsliY = modelPesawat.localEulerAngles.y;
             rotasiModelAsliZ = modelPesawat.localEulerAngles.z;
         }
+
+        // Pastikan panel nonaktif di awal
+        if (panelGameOver != null) panelGameOver.SetActive(false);
+        if (panelWin != null) panelWin.SetActive(false);
     }
 
     void Update()
@@ -90,6 +107,11 @@ public class GerakPesawat : MonoBehaviour
             {
                 audioSource.PlayOneShot(suaraTembak);
             }
+            if (matPesawat != null)
+            {
+                StopAllCoroutines();
+                StartCoroutine(FlashWarna());
+            }
         }
     }
 
@@ -126,4 +148,39 @@ public class GerakPesawat : MonoBehaviour
         if (panelGameOver != null) panelGameOver.SetActive(true);
     }
 
+    // ========== FUNGSI BARU: UNTUK MENANG ==========
+    public void WinGame()
+    {
+        Debug.Log("WIN GAME! Score mencapai 100!");
+
+        // HENTIKAN GAME (sama seperti GameOver)
+        Time.timeScale = 0;
+
+        // TAMPILKAN PANEL WIN (bukan panel GameOver)
+        if (panelWin != null)
+        {
+            panelWin.SetActive(true);
+            Debug.Log("Panel Win diaktifkan!");
+        }
+        else
+        {
+            Debug.LogError("Panel Win belum diassign di Inspector!");
+
+            // Fallback ke panel GameOver
+            if (panelGameOver != null)
+            {
+                panelGameOver.SetActive(true);
+            }
+        }
+
+        // CATATAN: Tidak ada pemanggilan KenaHit() di sini
+        // Jadi pesawat TIDAK AKAN mengecila
+    }
+
+    IEnumerator FlashWarna()
+    {
+        matPesawat.SetColor("_Color", warnaTembak);
+        yield return new WaitForSeconds(durasiWarnaTembak);
+        matPesawat.SetColor("_Color", warnaNormal);
+    }
 }
