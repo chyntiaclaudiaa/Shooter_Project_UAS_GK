@@ -21,12 +21,15 @@ public class GerakPesawat : MonoBehaviour
 
     [Header("UI")]
     public GameObject panelGameOver;
-    public GameObject panelWin; // <-- BARU: Panel untuk menang
+    public GameObject panelWin;
 
     [Header("Audio")]
     public AudioClip suaraTembak;
     public AudioClip suaraGameOver;
     private AudioSource audioSource;
+
+    // --- TAMBAHAN AUDIO BGM ---
+    private AudioSource audioSourceBGM; 
 
     private float rotasiModelAsliX;
     private float rotasiModelAsliY;
@@ -40,18 +43,24 @@ public class GerakPesawat : MonoBehaviour
 
     private Material matPesawat;
 
-
     void Start()
     {
-        // Cari komponen AudioSource di benda ini
         audioSource = GetComponent<AudioSource>();
+
+        if (Camera.main != null)
+        {
+            audioSourceBGM = Camera.main.GetComponent<AudioSource>();
+        }
+
+        // Setup Warna
         rendererPesawat = GetComponentInChildren<Renderer>();
         if (rendererPesawat != null)
         {
-            matPesawat = rendererPesawat.material; // INSTANCE material
+            matPesawat = rendererPesawat.material;
             matPesawat.SetColor("_Color", warnaNormal);
         }
 
+        // Setup Rotasi Awal
         if (modelPesawat != null)
         {
             rotasiModelAsliX = modelPesawat.localEulerAngles.x;
@@ -59,7 +68,7 @@ public class GerakPesawat : MonoBehaviour
             rotasiModelAsliZ = modelPesawat.localEulerAngles.z;
         }
 
-        // Pastikan panel nonaktif di awal
+        // Mastiin panel nonaktif di awal
         if (panelGameOver != null) panelGameOver.SetActive(false);
         if (panelWin != null) panelWin.SetActive(false);
     }
@@ -107,6 +116,7 @@ public class GerakPesawat : MonoBehaviour
             {
                 audioSource.PlayOneShot(suaraTembak);
             }
+            // EFEK WARNA TEMBAK
             if (matPesawat != null)
             {
                 StopAllCoroutines();
@@ -144,37 +154,40 @@ public class GerakPesawat : MonoBehaviour
             audioSource.PlayOneShot(suaraGameOver);
         }
 
+        // MATIKAN MUSIK BACKGROUND (BGM)
+        if (audioSourceBGM != null)
+        {
+            audioSourceBGM.Stop();
+        }
+
         Time.timeScale = 0;
         if (panelGameOver != null) panelGameOver.SetActive(true);
     }
 
-    // ========== FUNGSI BARU: UNTUK MENANG ==========
+    // ========== FUNGSI MENANG ==========
     public void WinGame()
     {
-        Debug.Log("WIN GAME! Score mencapai 100!");
+        Debug.Log("WIN GAME! Score mencapai target!");
 
-        // HENTIKAN GAME (sama seperti GameOver)
+        // HENTIKAN GAME
         Time.timeScale = 0;
 
-        // TAMPILKAN PANEL WIN (bukan panel GameOver)
+        // MATIKAN MUSIK BACKGROUND JUGA PAS MENANG
+        if (audioSourceBGM != null)
+        {
+            audioSourceBGM.Stop();
+        }
+
+        // TAMPILKAN PANEL WIN
         if (panelWin != null)
         {
             panelWin.SetActive(true);
-            Debug.Log("Panel Win diaktifkan!");
         }
-        else
+        else if (panelGameOver != null)
         {
-            Debug.LogError("Panel Win belum diassign di Inspector!");
-
-            // Fallback ke panel GameOver
-            if (panelGameOver != null)
-            {
-                panelGameOver.SetActive(true);
-            }
+            // Fallback kalau lupa pasang panel win
+            panelGameOver.SetActive(true);
         }
-
-        // CATATAN: Tidak ada pemanggilan KenaHit() di sini
-        // Jadi pesawat TIDAK AKAN mengecila
     }
 
     IEnumerator FlashWarna()
